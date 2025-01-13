@@ -1,4 +1,3 @@
-import s from "./ImageCard.module.css";
 const ImageCard = ({ item, onImageClick }) => {
   return (
     <div>
