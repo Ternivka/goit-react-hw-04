@@ -43,7 +43,7 @@ function App() {
     }
     setQuery(newQuery);
     setImages([]);
-    setPage(0);
+    setPage(1);
   };
 
   const handleClickImage = (imageUrl) => {
