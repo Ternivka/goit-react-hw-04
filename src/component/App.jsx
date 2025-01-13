@@ -1,34 +1,78 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import axios from "axios";
 import { fetchImages } from "../services/api";
+import Loader from "./Loader/Loader";
+import ImageGallery from "./ImageGallery/ImageGallery";
+import { SearchBar } from "./SearchBar/SearchBar";
+import ImageModal from "./ImageModal/ImageModal";
 
 function App() {
-  const [images, setImages] = useState([]);
+  const [image, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
   useEffect(() => {
     const getImagesData = async () => {
+      if (!query.trim()) return;
       try {
-        const { results } = await fetchImages("react");
-        setImages(results);
+        setIsLoading(true);
+        setIsError(false);
+        const { results } = await fetchImages(query, page);
+        setImages((prev) => [...prev, ...results]);
       } catch (error) {
+        setIsError(true);
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
     getImagesData();
-  }, []);
+  }, [query, page]);
+
+  const handleChangePage = () => {
+    setPage((prev) => prev + 1);
+  };
+
+  const handleChangeQuery = (newQuery) => {
+    if (newQuery === query) {
+      return;
+    }
+    setQuery(newQuery);
+    setImages([]);
+    setPage(0);
+  };
+
+  const handleClickImage = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setIsModalOpen(true);
+  };
+
+  const handleClickImageClose = () => {
+    setIsModalOpen(false);
+    setSelectedImage(null);
+  };
+
   return (
-    <div>
-      <h2>Images</h2>
-      <ul>
-        {images.map((item) => {
-          return (
-            <li key={item.id}>
-              <img src={item.urls.small} alt={item.alt_description} />
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+    <>
+      <SearchBar onSearchChanged={handleChangeQuery} />
+      {image.length > 0 && (
+        <ImageGallery image={image} onImageClick={handleClickImage} />
+      )}
+      {isLoading && <Loader />}
+      {image.length > 0 && !isLoading && (
+        <button onClick={handleChangePage}>Load more</button>
+      )}{" "}
+      {isError && <h2>Something went wrong😔! Try again...</h2>}
+      <ImageModal
+        isOpen={isModalOpen}
+        onClose={handleClickImageClose}
+        image={selectedImage}
+      />
+    </>
   );
 }
 
