@@ -4,7 +4,6 @@ const ImageCard = ({ item, onImageClick }) => {
       <img
         src={item.urls.small}
         alt={item.alt_description}
-        className={s.img}
         onClick={() => {
           onImageClick(item.urls.regular);
         }}
