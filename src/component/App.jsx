@@ -5,6 +5,8 @@ import Loader from "./Loader/Loader";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import { SearchBar } from "./SearchBar/SearchBar";
 import ImageModal from "./ImageModal/ImageModal";
+import ErrorMessage from "./ErrorMessage/ErrorMessage";
+import toast from "react-hot-toast";
 
 function App() {
   const [image, setImages] = useState([]);
@@ -26,6 +28,7 @@ function App() {
       } catch (error) {
         setIsError(true);
         console.log(error);
+        toast.error("This didn't work. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -65,8 +68,8 @@ function App() {
       {isLoading && <Loader />}
       {image.length > 0 && !isLoading && (
         <button onClick={handleChangePage}>Load more</button>
-      )}{" "}
-      {isError && <h2>Something went wrong😔! Try again...</h2>}
+      )}
+      {isError && <ErrorMessage />}
       <ImageModal
         isOpen={isModalOpen}
         onClose={handleClickImageClose}
