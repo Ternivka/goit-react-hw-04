@@ -9,7 +9,7 @@ import ErrorMessage from "./ErrorMessage/ErrorMessage";
 import toast from "react-hot-toast";
 
 function App() {
-  const [image, setImages] = useState([]);
+  const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [page, setPage] = useState(1);
@@ -62,11 +62,11 @@ function App() {
   return (
     <>
       <SearchBar onSearchChanged={handleChangeQuery} />
-      {image.length > 0 && (
-        <ImageGallery image={image} onImageClick={handleClickImage} />
+      {images.length > 0 && (
+        <ImageGallery images={images} onImageClick={handleClickImage} />
       )}
       {isLoading && <Loader />}
-      {image.length > 0 && !isLoading && (
+      {images.length > 0 && !isLoading && (
         <button onClick={handleChangePage}>Load more</button>
       )}
       {isError && <ErrorMessage />}
